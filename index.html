@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>AdyOS — Personal Productivity System</title>
+<meta name="description" content="AdyOS is a premium personal productivity system: daily checklists, streaks, XP, analytics, calendar and pomodoro — all offline-first." />
+<meta name="theme-color" content="#0B1220" />
+<link rel="manifest" href="manifest.json" />
+<link rel="icon" href="icons/icon-192.png" />
+<link rel="apple-touch-icon" href="icons/icon-192.png" />
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- ================= APP SHELL ================= -->
+<div class="app" id="app">
+
+  <!-- ---------- SIDEBAR ---------- -->
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <div class="brand-mark">A</div>
+      <div class="brand-text">
+        <span class="brand-name">AdyOS</span>
+        <span class="brand-sub">Productivity System</span>
+      </div>
+    </div>
+
+    <nav class="nav" id="mainNav">
+      <button class="nav-item active" data-view="dashboard">
+        <svg class="ic" viewBox="0 0 24 24"><path d="M3 13h8V3H3v10Zm0 8h8v-6H3v6Zm10 0h8V11h-8v10Zm0-18v6h8V3h-8Z"/></svg>
+        <span>Dashboard</span>
+      </button>
+      <button class="nav-item" data-view="tasks">
+        <svg class="ic" viewBox="0 0 24 24"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2Z"/></svg>
+        <span>Tasks</span>
+      </button>
+      <button class="nav-item" data-view="history">
+        <svg class="ic" viewBox="0 0 24 24"><path d="M13 3a9 9 0 1 0 8.94 10H19.9A7 7 0 1 1 13 5v4l5-4-5-4v2Z"/></svg>
+        <span>History</span>
+      </button>
+      <button class="nav-item" data-view="analytics">
+        <svg class="ic" viewBox="0 0 24 24"><path d="M5 21V9h3v12H5Zm6 0V3h3v18h-3Zm6 0v-7h3v7h-3Z"/></svg>
+        <span>Analytics</span>
+      </button>
+      <button class="nav-item" data-view="calendar">
+        <svg class="ic" viewBox="0 0 24 24"><path d="M7 2v2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-2V2h-2v2H9V2H7ZM5 9h14v11H5V9Z"/></svg>
+        <span>Calendar</span>
+      </button>
+      <button class="nav-item" data-view="pomodoro">
+        <svg class="ic" viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2Zm1 10.6 4 2.4-.8 1.3L11 13V7h2v5.6Z"/></svg>
+        <span>Pomodoro</span>
+      </button>
+      <button class="nav-item" data-view="settings">
+        <svg class="ic" viewBox="0 0 24 24"><path d="M19.4 13a7.9 7.9 0 0 0 .1-1 7.9 7.9 0 0 0-.1-1l2.1-1.6a.5.5 0 0 0 .1-.7l-2-3.5a.5.5 0 0 0-.6-.2l-2.5 1a7.6 7.6 0 0 0-1.7-1l-.4-2.6a.5.5 0 0 0-.5-.4h-4a.5.5 0 0 0-.5.4l-.4 2.6a7.6 7.6 0 0 0-1.7 1l-2.5-1a.5.5 0 0 0-.6.2l-2 3.5a.5.5 0 0 0 .1.7L4.5 11a7.9 7.9 0 0 0 0 2l-2.1 1.6a.5.5 0 0 0-.1.7l2 3.5a.5.5 0 0 0 .6.2l2.5-1a7.6 7.6 0 0 0 1.7 1l.4 2.6a.5.5 0 0 0 .5.4h4a.5.5 0 0 0 .5-.4l.4-2.6a7.6 7.6 0 0 0 1.7-1l2.5 1a.5.5 0 0 0 .6-.2l2-3.5a.5.5 0 0 0-.1-.7L19.4 13ZM12 15.5A3.5 3.5 0 1 1 15.5 12 3.5 3.5 0 0 1 12 15.5Z"/></svg>
+        <span>Settings</span>
+      </button>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="streak-pill" id="sidebarStreak">
+        <span class="fire">🔥</span>
+        <span id="sidebarStreakVal">0</span>
+        <span class="streak-label">day streak</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ---------- MOBILE TOPBAR ---------- -->
+  <header class="topbar">
+    <button class="icon-btn" id="menuToggle" aria-label="Menu">
+      <svg viewBox="0 0 24 24"><path d="M3 6h18v2H3V6Zm0 5h18v2H3v-2Zm0 5h18v2H3v-2Z"/></svg>
+    </button>
+    <div class="topbar-brand">AdyOS</div>
+    <button class="icon-btn" id="quickAddBtn" aria-label="Add task">
+      <svg viewBox="0 0 24 24"><path d="M11 11V5h2v6h6v2h-6v6h-2v-6H5v-2h6Z"/></svg>
+    </button>
+  </header>
+
+  <!-- ---------- MAIN ---------- -->
+  <main class="main" id="main">
+
+    <!-- ================= DASHBOARD ================= -->
+    <section class="view active" id="view-dashboard">
+      <div class="view-fade">
+        <header class="greeting-header">
+          <div>
+            <h1 id="greetingText">Good Morning</h1>
+            <p class="date-time"><span id="dateText"></span> · <span id="timeText"></span></p>
+          </div>
+          <button class="btn btn-accent" id="addTaskBtnDash">
+            <svg viewBox="0 0 24 24"><path d="M11 11V5h2v6h6v2h-6v6h-2v-6H5v-2h6Z"/></svg>
+            Add Task
+          </button>
+        </header>
+
+        <div class="stat-grid">
+          <div class="stat-card glass">
+            <span class="stat-label">Today's Progress</span>
+            <div class="progress-ring-wrap">
+              <svg class="progress-ring" viewBox="0 0 120 120">
+                <circle class="ring-bg" cx="60" cy="60" r="52"></circle>
+                <circle class="ring-fg" id="ringFg" cx="60" cy="60" r="52"></circle>
+              </svg>
+              <div class="ring-center"><span id="progressPercent">0%</span></div>
+            </div>
+            <span class="stat-sub" id="progressFraction">0 / 0 tasks</span>
+          </div>
+
+          <div class="stat-card glass">
+            <span class="stat-label">Today's Score</span>
+            <span class="stat-value" id="todayScore">0</span>
+            <span class="stat-sub">points earned today</span>
+          </div>
+
+          <div class="stat-card glass">
+            <span class="stat-label">Current Streak</span>
+            <span class="stat-value flame-value"><span id="streakVal">0</span> <span class="fire">🔥</span></span>
+            <span class="stat-sub">consecutive active days</span>
+          </div>
+
+          <div class="stat-card glass">
+            <span class="stat-label">Level</span>
+            <span class="stat-value">Lv. <span id="levelVal">1</span></span>
+            <div class="xp-bar-track">
+              <div class="xp-bar-fill" id="xpBarFill"></div>
+            </div>
+            <span class="stat-sub"><span id="xpVal">0</span> / <span id="xpNeeded">100</span> XP</span>
+          </div>
+        </div>
+
+        <div class="section-row">
+          <h2>Today's Checklist</h2>
+          <div class="search-inline">
+            <input type="text" id="dashFilter" placeholder="Filter today's tasks…" />
+          </div>
+        </div>
+
+        <ul class="task-list" id="todayList"></ul>
+
+        <button class="btn btn-ghost full-width" id="addCustomTaskDash">
+          <svg viewBox="0 0 24 24"><path d="M11 11V5h2v6h6v2h-6v6h-2v-6H5v-2h6Z"/></svg>
+          Add a custom task
+        </button>
+      </div>
+    </section>
+
+    <!-- ================= TASKS ================= -->
+    <section class="view" id="view-tasks">
+      <div class="view-fade">
+        <header class="section-header">
+          <h1>Tasks</h1>
+          <button class="btn btn-accent" id="addTaskBtnTasks">
+            <svg viewBox="0 0 24 24"><path d="M11 11V5h2v6h6v2h-6v6h-2v-6H5v-2h6Z"/></svg>
+            New Task
+          </button>
+        </header>
+
+        <div class="toolbar glass">
+          <input type="text" id="taskSearch" class="search-input" placeholder="Search tasks…" />
+          <div class="filter-group">
+            <select id="filterStatus">
+              <option value="all">All Status</option>
+              <option value="completed">Completed</option>
+              <option value="pending">Pending</option>
+            </select>
+            <select id="filterCategory">
+              <option value="all">All Categories</option>
+            </select>
+            <select id="filterPriority">
+              <option value="all">All Priority</option>
+              <option value="easy">Easy</option>
+              <option value="medium">Medium</option>
+              <option value="hard">Hard</option>
+            </select>
+          </div>
+        </div>
+
+        <ul class="task-list" id="allTasksList"></ul>
+      </div>
+    </section>
+
+    <!-- ================= HISTORY ================= -->
+    <section class="view" id="view-history">
+      <div class="view-fade">
+        <header class="section-header">
+          <h1>History</h1>
+        </header>
+        <div class="toolbar glass">
+          <input type="text" id="historySearch" class="search-input" placeholder="Search history by date (e.g. August, 2026-08-01)…" />
+        </div>
+        <div class="history-list" id="historyList"></div>
+        <div class="empty-state" id="historyEmpty" hidden>
+          <div class="empty-icon">🗂️</div>
+          <p>No history yet. Complete a day and check back here tomorrow.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= ANALYTICS ================= -->
+    <section class="view" id="view-analytics">
+      <div class="view-fade">
+        <header class="section-header">
+          <h1>Analytics</h1>
+        </header>
+
+        <div class="analytics-grid">
+          <div class="chart-card glass">
+            <h3>Weekly Progress</h3>
+            <canvas id="chartWeekly"></canvas>
+          </div>
+          <div class="chart-card glass">
+            <h3>Monthly Progress</h3>
+            <canvas id="chartMonthly"></canvas>
+          </div>
+          <div class="chart-card glass">
+            <h3>Completion Rate</h3>
+            <canvas id="chartPie"></canvas>
+          </div>
+          <div class="chart-card glass">
+            <h3>Daily Completion (Last 14 days)</h3>
+            <canvas id="chartBar"></canvas>
+          </div>
+        </div>
+
+        <div class="stat-grid two-col">
+          <div class="stat-card glass">
+            <span class="stat-label">Best Day</span>
+            <span class="stat-value" id="bestDay">—</span>
+            <span class="stat-sub" id="bestDaySub">no data yet</span>
+          </div>
+          <div class="stat-card glass">
+            <span class="stat-label">Worst Day</span>
+            <span class="stat-value" id="worstDay">—</span>
+            <span class="stat-sub" id="worstDaySub">no data yet</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= CALENDAR ================= -->
+    <section class="view" id="view-calendar">
+      <div class="view-fade">
+        <header class="section-header">
+          <h1>Calendar</h1>
+        </header>
+        <div class="glass calendar-card">
+          <div class="calendar-legend">
+            <span><i class="dot dot-green"></i> Completed</span>
+            <span><i class="dot dot-orange"></i> Partial</span>
+            <span><i class="dot dot-red"></i> Missed</span>
+            <span><i class="dot dot-empty"></i> No data</span>
+          </div>
+          <div class="contribution-graph" id="contributionGraph"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= POMODORO ================= -->
+    <section class="view" id="view-pomodoro">
+      <div class="view-fade">
+        <header class="section-header">
+          <h1>Pomodoro</h1>
+        </header>
+
+        <div class="pomodoro-wrap glass">
+          <div class="pomodoro-presets">
+            <button class="chip active" data-min="25">25 min</button>
+            <button class="chip" data-min="5">5 min</button>
+            <button class="chip" data-min="50">50 min</button>
+            <button class="chip" id="customTimerChip" data-min="custom">Custom</button>
+          </div>
+
+          <div class="timer-display">
+            <svg class="timer-ring" viewBox="0 0 200 200">
+              <circle class="timer-ring-bg" cx="100" cy="100" r="90"></circle>
+              <circle class="timer-ring-fg" id="timerRingFg" cx="100" cy="100" r="90"></circle>
+            </svg>
+            <div class="timer-time" id="timerDisplay">25:00</div>
+          </div>
+
+          <div class="timer-controls">
+            <button class="btn btn-accent" id="timerStart">Start</button>
+            <button class="btn btn-ghost" id="timerPause">Pause</button>
+            <button class="btn btn-ghost" id="timerReset">Reset</button>
+          </div>
+          <p class="timer-hint" id="timerSessions">0 sessions completed today</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= SETTINGS ================= -->
+    <section class="view" id="view-settings">
+      <div class="view-fade">
+        <header class="section-header">
+          <h1>Settings</h1>
+        </header>
+
+        <div class="settings-list">
+          <div class="settings-row glass">
+            <div>
+              <h4>Theme</h4>
+              <p>Choose light or dark mode</p>
+            </div>
+            <div class="segmented" id="themeToggle">
+              <button class="seg-btn active" data-theme="dark">Dark</button>
+              <button class="seg-btn" data-theme="light">Light</button>
+            </div>
+          </div>
+
+          <div class="settings-row glass">
+            <div>
+              <h4>Accent Color</h4>
+              <p>Personalize your AdyOS accent</p>
+            </div>
+            <div class="accent-swatches" id="accentSwatches">
+              <button class="swatch" style="--c:#22C55E" data-color="#22C55E"></button>
+              <button class="swatch" style="--c:#3B82F6" data-color="#3B82F6"></button>
+              <button class="swatch" style="--c:#A855F7" data-color="#A855F7"></button>
+              <button class="swatch" style="--c:#F59E0B" data-color="#F59E0B"></button>
+              <button class="swatch" style="--c:#EC4899" data-color="#EC4899"></button>
+              <button class="swatch" style="--c:#06B6D4" data-color="#06B6D4"></button>
+            </div>
+          </div>
+
+          <div class="settings-row glass">
+            <div>
+              <h4>Export Data</h4>
+              <p>Download all your AdyOS data as JSON</p>
+            </div>
+            <button class="btn btn-ghost" id="exportBtn">Export JSON</button>
+          </div>
+
+          <div class="settings-row glass">
+            <div>
+              <h4>Import Data</h4>
+              <p>Restore AdyOS data from a JSON backup</p>
+            </div>
+            <label class="btn btn-ghost" for="importInput">Import JSON</label>
+            <input type="file" id="importInput" accept="application/json" hidden />
+          </div>
+
+          <div class="settings-row glass danger">
+            <div>
+              <h4>Reset Data</h4>
+              <p>Permanently erase all AdyOS data on this device</p>
+            </div>
+            <button class="btn btn-danger" id="resetBtn">Reset Data</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- ================= OVERLAY / MODALS ================= -->
+<div class="overlay" id="overlay"></div>
+
+<div class="modal" id="taskModal">
+  <div class="modal-header">
+    <h3 id="taskModalTitle">Add Task</h3>
+    <button class="icon-btn" id="taskModalClose">
+      <svg viewBox="0 0 24 24"><path d="M18.3 5.71 12 12l6.3 6.29-1.41 1.42L10.59 13.4 4.3 19.7l-1.41-1.41L9.17 12 2.89 5.71 4.3 4.29l6.29 6.3 6.3-6.3z"/></svg>
+    </button>
+  </div>
+  <div class="modal-body">
+    <label class="field-label">Task name</label>
+    <input type="text" id="taskNameInput" class="field-input" placeholder="e.g. DSA — 2 problems" maxlength="80" />
+
+    <label class="field-label">Category</label>
+    <input type="text" id="taskCategoryInput" class="field-input" placeholder="e.g. Study, Health, Work" list="categoryList" />
+    <datalist id="categoryList"></datalist>
+
+    <label class="field-label">Priority (XP)</label>
+    <div class="segmented" id="priorityToggle">
+      <button class="seg-btn active" data-priority="easy">Easy · 10 XP</button>
+      <button class="seg-btn" data-priority="medium">Medium · 25 XP</button>
+      <button class="seg-btn" data-priority="hard">Hard · 50 XP</button>
+    </div>
+
+    <label class="field-label">Notes</label>
+    <textarea id="taskNotesInput" class="field-input" rows="3" placeholder="Add notes, e.g. Solve LeetCode 121"></textarea>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-ghost" id="taskDeleteBtn" hidden>Delete</button>
+    <button class="btn btn-accent" id="taskSaveBtn">Save Task</button>
+  </div>
+</div>
+
+<div class="modal" id="dayModal">
+  <div class="modal-header">
+    <h3 id="dayModalTitle">Day Detail</h3>
+    <button class="icon-btn" id="dayModalClose">
+      <svg viewBox="0 0 24 24"><path d="M18.3 5.71 12 12l6.3 6.29-1.41 1.42L10.59 13.4 4.3 19.7l-1.41-1.41L9.17 12 2.89 5.71 4.3 4.29l6.29 6.3 6.3-6.3z"/></svg>
+    </button>
+  </div>
+  <div class="modal-body" id="dayModalBody"></div>
+</div>
+
+<div class="toast-container" id="toastContainer"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
